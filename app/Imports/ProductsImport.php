@@ -21,3 +21,4 @@ class ProductsImport implements ToModel, WithHeadingRow
         ]);
     }
 }
+
