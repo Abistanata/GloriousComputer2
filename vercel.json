@@ -9,7 +9,7 @@
     "routes": [
         {
             "src": "/img/(.*)",
-            "dest": "/public/img/"
+            "dest": "/public/images"
         },
         {
             "src": "/(.*)",
