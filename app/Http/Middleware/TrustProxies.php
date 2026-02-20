@@ -12,7 +12,11 @@ class TrustProxies extends Middleware
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    /**
+     * Vercel (dan reverse proxy lain) mengirim X-Forwarded-* headers.
+     * Trust semua proxy agar URL/scheme (HTTPS) dan session cookie benar.
+     */
+    protected $proxies = '*';
 
     /**
      * The headers that should be used to detect proxies.

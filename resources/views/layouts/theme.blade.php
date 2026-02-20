@@ -2626,31 +2626,31 @@
                     })
                 });
 
-                const data = await response.json();
+                const text = await response.text();
+                let data = null;
+                try { data = JSON.parse(text); } catch (e) { /* server mungkin mengembalikan HTML (500) */ }
 
                 if (spinner) spinner.classList.add('hidden');
                 if (buttonText) buttonText.textContent = 'Masuk ke Akun';
 
-                if (response.ok && data.success) {
+                if (response.ok && data && data.success) {
                     this.currentUser = data.user;
                     localStorage.setItem('glorious_user', JSON.stringify(data.user));
                     this.hidePopup('customer-login-popup');
                     this.showSuccess('Login Berhasil', data.message || 'Selamat datang kembali!');
-                    // Reload/redirect agar Blade re-render dengan auth & session sinkron
                     if (data.redirect) {
                         window.location.href = data.redirect;
                     } else {
                         window.location.reload();
                     }
                     return;
-                } else {
-                    this.showError('Login Gagal', data.message || 'Email atau password salah');
                 }
+                const errMsg = (data && data.message) ? data.message : (response.ok ? 'Email atau password salah' : 'Terjadi kesalahan server (HTTP ' + response.status + '). Cek koneksi database dan env di Vercel.');
+                this.showError('Login Gagal', errMsg);
             } catch (error) {
                 if (spinner) spinner.classList.add('hidden');
                 if (buttonText) buttonText.textContent = 'Masuk ke Akun';
-                
-                this.showError('Error Sistem', 'Terjadi kesalahan saat menghubungi server');
+                this.showError('Error Sistem', 'Terjadi kesalahan saat menghubungi server. Periksa koneksi internet dan URL aplikasi.');
                 console.error('Login error:', error);
             }
         },
@@ -2760,13 +2760,14 @@
             if (buttonText) buttonText.textContent = 'Mengirim...';
             
             try {
-                const response = await fetch('/api/auth/forgot-password', {
+                const response = await fetch('{{ url("/forgot-password") }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': this.csrfToken,
                         'Accept': 'application/json'
                     },
+                    credentials: 'same-origin',
                     body: JSON.stringify({
                         identifier: identifier
                     })
