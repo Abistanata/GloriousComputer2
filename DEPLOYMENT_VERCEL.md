@@ -42,14 +42,17 @@ Dokumen ini berisi langkah demi langkah untuk mengatasi tiga masalah production:
 - **`vercel.json`**: Route rewrite diperbaiki:
   - **Sebelum**: `"dest": "/public/images"` (salah; path ini tidak ada di output Vercel).
   - **Sesudah**: `"dest": "/images/$1"` sehingga request ke `/img/logotab.png` di-rewrite ke `/images/logotab.png`.
+- Ditambah route **`/images/(.*)` → `/images/$1`** agar request ke `/images/Logo2.png` (dari `asset('images/Logo2.png')`) dilayani sebagai file statis, bukan diteruskan ke Laravel (yang menyebabkan 404).
 
 Dengan **outputDirectory: "public"**, isi folder `public/` diletakkan di root deployment. Jadi:
-- `public/images/logotab.png` → URL: `https://domain-Anda/images/logotab.png`.
+- `public/images/Logo2.png` → URL: `https://domain-Anda/images/Logo2.png`.
 - Request ke `https://domain-Anda/img/logotab.png` akan dilayani sebagai `/images/logotab.png`.
 
 ### Yang harus Anda lakukan
-- Pastikan file ada di **`public/images/`** (mis. `logotab.png`, `Logo2.png`, dll.).
-- Setelah deploy, akses: `https://domain-Anda/img/logotab.png` (bukan `/images/...` jika Anda ingin konsisten pakai path `/img/`).
+- Pastikan file ada di **`public/images/`** (mis. `logotab.png`, **`Logo2.png`**, dll.). Jika `Logo2.png` belum ada di repo (hanya dihasilkan oleh `tools/process_brand_assets.php`), Anda harus:
+  - **Opsi A**: Jalankan script tersebut lokal, lalu commit `public/images/Logo2.png` (dan asset lain yang dipakai) ke git.
+  - **Opsi B**: Tambahkan build step di Vercel yang menjalankan script tersebut sebelum deploy (jika dependency PHP/GD tersedia).
+- Setelah file ada dan route sudah benar, redeploy. Logo akan tampil di `/images/Logo2.png`.
 
 ---
 
