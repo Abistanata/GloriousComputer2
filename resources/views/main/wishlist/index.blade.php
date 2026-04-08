@@ -26,13 +26,6 @@
     {{-- ── MAIN CONTENT ─────────────────────────────────────── --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 
-        {{-- STATS — @php logic tidak diubah --}}
-        @php
-            $wishlistCount      = $wishlistItems->count();
-            $inStockCount       = $wishlistItems->filter(fn($p) => ($p->current_stock ?? 0) > 0)->count();
-            $wishlistTotalValue = $wishlistItems->sum(fn($p) => $p->final_price ?? $p->selling_price ?? 0);
-        @endphp
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             <div class="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6 hover:border-primary/30 transition-all duration-300">
                 <div class="flex items-center gap-5">
@@ -174,7 +167,7 @@
                 @endif
             </div>
 
-            {{-- ── SIDEBAR RINGKASAN — semua nilai dari @php di atas, tidak diubah ── --}}
+            {{-- ── SIDEBAR RINGKASAN ── --}}
             <div class="lg:col-span-1">
                 <div class="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6 sticky top-24">
                     <h3 class="text-base font-bold text-white mb-5 flex items-center gap-2">
@@ -302,11 +295,4 @@
         color: white; font-weight: bold;
     }
 </style>
-@endsection
-@endsection
-@endsection
-@endsection
-@endsection
-@endsection
-@endsection
 @endsection

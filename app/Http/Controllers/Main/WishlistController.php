@@ -18,18 +18,23 @@ class WishlistController extends Controller
     {
         // Get wishlist items for authenticated user or from session
         $wishlistItems = $this->getWishlistItems();
-        
+
         // Get wishlist count for the badge
         $wishlistCount = $this->getWishlistCount();
-        
+
+        $inStockCount = $wishlistItems->filter(fn ($p) => ($p->current_stock ?? 0) > 0)->count();
+        $wishlistTotalValue = $wishlistItems->sum(fn ($p) => $p->final_price ?? $p->selling_price ?? 0);
+
         // Get categories for sidebar if needed
         $categories = \App\Models\Category::withCount('products')
             ->orderBy('name')
             ->get();
-        
+
         return view('main.wishlist.index', [
             'wishlistItems' => $wishlistItems,
             'wishlistCount' => $wishlistCount,
+            'inStockCount' => $inStockCount,
+            'wishlistTotalValue' => $wishlistTotalValue,
             'categories' => $categories,
             'pageTitle' => 'My Wishlist - Glorious Computer'
         ]);
@@ -237,26 +242,27 @@ class WishlistController extends Controller
                 ->get()
                 ->pluck('product')
                 ->filter();
-            foreach ($wishlistItems as $product) {
-                $product->current_stock = StockTransaction::where('product_id', $product->id)
-                    ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
-                    ->value('stock') ?? 0;
-            }
         } else {
             // For guests - get from session
             $wishlistIds = session('wishlist', []);
-            
+
             if (empty($wishlistIds)) {
                 return collect();
             }
-            
+
             $wishlistItems = Product::with('category')
                 ->whereIn('id', $wishlistIds)
                 // Hapus kondisi where('is_active', true) jika kolom tidak ada
-                ->orderByRaw("FIELD(id, " . implode(',', $wishlistIds) . ")")
+                ->orderByRaw('FIELD(id, ' . implode(',', array_map('intval', $wishlistIds)) . ')')
                 ->get();
         }
-        
+
+        foreach ($wishlistItems as $product) {
+            $product->current_stock = StockTransaction::where('product_id', $product->id)
+                ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                ->value('stock') ?? 0;
+        }
+
         return $wishlistItems;
     }
 
