@@ -385,7 +385,31 @@ class Product extends Model
     }
 
     /**
-     * Remove product image from public/product_images or storage disk (legacy uploads).
+     * Directory for new product image uploads (see config/product_uploads.php).
+     */
+    public static function productImagesStorageDirectory(): string
+    {
+        return config('product_uploads.storage', 'public') === 'base'
+            ? base_path('product_images')
+            : public_path('product_images');
+    }
+
+    /**
+     * Absolute path for a stored relative path (e.g. product_images/foo.jpg).
+     */
+    public static function absolutePathForImage(?string $relativePath): ?string
+    {
+        if (empty($relativePath)) {
+            return null;
+        }
+
+        return config('product_uploads.storage', 'public') === 'base'
+            ? base_path($relativePath)
+            : public_path($relativePath);
+    }
+
+    /**
+     * Remove product image from public/base product_images or storage disk (legacy uploads).
      */
     public static function deleteImageIfExists(?string $path): void
     {
@@ -393,11 +417,12 @@ class Product extends Model
             return;
         }
 
-        $publicFile = public_path($path);
-        if (is_file($publicFile)) {
-            @unlink($publicFile);
+        foreach (array_unique([public_path($path), base_path($path)]) as $full) {
+            if (is_file($full)) {
+                @unlink($full);
 
-            return;
+                return;
+            }
         }
 
         if (Storage::disk('public')->exists($path)) {
@@ -406,7 +431,7 @@ class Product extends Model
     }
 
     /**
-     * Public URL for the product image (public dir, storage disk, or absolute URL).
+     * Public URL for the product image (public dir, base dir, storage disk, or absolute URL).
      */
     public function imageUrl(): ?string
     {
@@ -419,7 +444,7 @@ class Product extends Model
             return $path;
         }
 
-        if (is_file(public_path($path))) {
+        if (is_file(public_path($path)) || is_file(base_path($path))) {
             return asset($path);
         }
 

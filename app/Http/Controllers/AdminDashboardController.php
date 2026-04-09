@@ -1240,7 +1240,7 @@ public function userDestroy(User $user)
     private function storeProductImageFile(\Illuminate\Http\UploadedFile $file): string
     {
         $filename = time().'.'.$file->getClientOriginalExtension();
-        $directory = public_path('product_images');
+        $directory = Product::productImagesStorageDirectory();
         if (! is_dir($directory)) {
             mkdir($directory, 0755, true);
         }
