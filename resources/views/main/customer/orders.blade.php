@@ -133,8 +133,8 @@
                                     @foreach($order->items as $item)
                                         <div class="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
                                             <div class="flex items-center gap-4 flex-1 min-w-0">
-                                                @if($item->product && $item->product->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->product->image))
-                                                    <img src="{{ asset('storage/' . $item->product->image) }}"
+                                                @if($item->product && $item->product->imageUrl())
+                                                    <img src="{{ $item->product->imageUrl() }}"
                                                          alt="{{ $item->product->name ?? 'Produk' }}"
                                                          class="w-16 h-16 object-cover rounded-xl bg-gray-800 flex-shrink-0">
                                                 @else

@@ -63,7 +63,7 @@
                             {{-- Kolom Produk --}}
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
-                                    <img class="h-10 w-10 rounded-lg object-cover mr-4" src="{{ $product->image ? asset('storage/' . $product->image) : 'https://ui-avatars.com/api/?name='.urlencode($product->name).'&background=random&size=128' }}" alt="{{ $product->name }}">
+                                    <img class="h-10 w-10 rounded-lg object-cover mr-4" src="{{ $product->imageUrl() ?: 'https://ui-avatars.com/api/?name='.urlencode($product->name).'&background=random&size=128' }}" alt="{{ $product->name }}">
                                     <div>
                                         <p class="font-medium text-gray-900 dark:text-white">{{ $product->name }}</p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">SKU: {{ $product->sku }}</p>

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -381,5 +382,51 @@ class Product extends Model
         return Attribute::make(
             get: fn () => $this->reviews()->count()
         );
+    }
+
+    /**
+     * Remove product image from public/product_images or storage disk (legacy uploads).
+     */
+    public static function deleteImageIfExists(?string $path): void
+    {
+        if (empty($path)) {
+            return;
+        }
+
+        $publicFile = public_path($path);
+        if (is_file($publicFile)) {
+            @unlink($publicFile);
+
+            return;
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
+    }
+
+    /**
+     * Public URL for the product image (public dir, storage disk, or absolute URL).
+     */
+    public function imageUrl(): ?string
+    {
+        $path = $this->image;
+        if (empty($path)) {
+            return null;
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (is_file(public_path($path))) {
+            return asset($path);
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            return asset('storage/'.$path);
+        }
+
+        return null;
     }
 }

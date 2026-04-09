@@ -93,8 +93,8 @@
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">
                             <div class="flex items-center">
-                                @if($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-8 h-8 rounded-md object-cover mr-3">
+                                @if($product->imageUrl())
+                                    <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" class="w-8 h-8 rounded-md object-cover mr-3">
                                 @endif
                                 <div>
                                     <div class="font-medium">{{ $product->name }}</div>

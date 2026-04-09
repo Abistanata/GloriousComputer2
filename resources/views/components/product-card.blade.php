@@ -14,15 +14,7 @@
     $warranty = method_exists($product, 'getWarrantyLabel') ? $product->getWarrantyLabel() : ($product->warranty ?? '-');
     $shipping = method_exists($product, 'getShippingInfoLabel') ? $product->getShippingInfoLabel() : '-';
     $stockStatus = $product->stock_status ?? ($currentStock > 0 ? 'in_stock' : 'out_of_stock');
-    $imagePath = $product->image ?? null;
-    $imageUrl = null;
-    if ($imagePath) {
-        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($imagePath)) {
-            $imageUrl = asset('storage/' . $imagePath);
-        } elseif (str_starts_with($imagePath, 'http')) {
-            $imageUrl = $imagePath;
-        }
-    }
+    $imageUrl = $product->imageUrl();
     // Rating data
     $avgRating = $product->average_rating ?? 0;
     $reviewCount = $product->review_count ?? 0;

@@ -67,7 +67,7 @@
                             {{-- Kolom Detail Produk --}}
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
-                                    <img class="h-10 w-10 rounded-lg object-cover mr-4" src="{{ $transaction->product->image ? asset('storage/' . $transaction->product->image) : 'https://ui-avatars.com/api/?name='.urlencode($transaction->product->name ?? 'P').'&background=random' }}" alt="{{ $transaction->product->name ?? 'Produk' }}">
+                                    <img class="h-10 w-10 rounded-lg object-cover mr-4" src="{{ $transaction->product->imageUrl() ?: 'https://ui-avatars.com/api/?name='.urlencode($transaction->product->name ?? 'P').'&background=random' }}" alt="{{ $transaction->product->name ?? 'Produk' }}">
                                     <div>
                                         <p class="font-medium text-gray-900 dark:text-white">{{ $transaction->product->name ?? 'Produk Telah Dihapus' }}</p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">Supplier: {{ $transaction->supplier->name ?? '-' }}</p>

@@ -68,8 +68,7 @@
                                 $product      = $item;
                                 $price        = $product->final_price ?? $product->selling_price ?? 0;
                                 $currentStock = $product->current_stock ?? 0;
-                                $imageUrl     = $product->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($product->image)
-                                                    ? asset('storage/' . $product->image) : null;
+                                $imageUrl     = $product->imageUrl();
                             @endphp
 
                             <div class="group bg-white/5 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/10

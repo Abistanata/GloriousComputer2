@@ -58,8 +58,7 @@
                                 @php
                                     $price    = $item->product->final_price ?? $item->product->selling_price ?? 0;
                                     $subtotal = $price * $item->quantity;
-                                    $imgUrl   = $item->product->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->product->image)
-                                                    ? asset('storage/' . $item->product->image) : null;
+                                    $imgUrl   = $item->product->imageUrl();
                                 @endphp
 
                                 <div class="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-5 hover:border-primary/20 transition-all duration-200 flex flex-col sm:flex-row gap-5 items-start sm:items-center">

@@ -456,7 +456,7 @@ public function userDestroy(User $user)
         }
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('product_images', 'public');
+            $validated['image'] = $this->storeProductImageFile($request->file('image'));
         }
 
         // Set default current_stock jika tidak diisi
@@ -536,14 +536,10 @@ public function userDestroy(User $user)
 
             // Handle image
             if ($request->hasFile('image')) {
-                if ($product->image) {
-                    Storage::disk('public')->delete($product->image);
-                }
-                $validatedData['image'] = $request->file('image')->store('product_images', 'public');
+                Product::deleteImageIfExists($product->image);
+                $validatedData['image'] = $this->storeProductImageFile($request->file('image'));
             } elseif ($request->input('remove_image')) {
-                if ($product->image) {
-                    Storage::disk('public')->delete($product->image);
-                }
+                Product::deleteImageIfExists($product->image);
                 $validatedData['image'] = null;
             } else {
                 unset($validatedData['image']);
@@ -589,8 +585,8 @@ public function userDestroy(User $user)
         try {
             Log::info("Attempting to delete product: {$product->id} - {$product->name}");
 
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
+            if ($product->image) {
+                Product::deleteImageIfExists($product->image);
                 Log::info("Deleted product image: {$product->image}");
             }
 
@@ -640,9 +636,7 @@ public function userDestroy(User $user)
                 DB::table('product_attributes')->where('product_id', $productId)->delete();
             }
 
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
-            }
+            Product::deleteImageIfExists($product->image);
 
             DB::table('products')->where('id', $productId)->delete();
             DB::statement('SET FOREIGN_KEY_CHECKS=1');
@@ -1241,5 +1235,17 @@ public function userDestroy(User $user)
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal mereset diskon: ' . $e->getMessage());
         }
+    }
+
+    private function storeProductImageFile(\Illuminate\Http\UploadedFile $file): string
+    {
+        $filename = time().'.'.$file->getClientOriginalExtension();
+        $directory = public_path('product_images');
+        if (! is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+        $file->move($directory, $filename);
+
+        return 'product_images/'.$filename;
     }
 }

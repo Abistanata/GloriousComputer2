@@ -60,7 +60,7 @@
             <div class="flex items-start">
                 <div class="flex-shrink-0 w-24 h-24 mr-6">
                     <img class="object-cover w-full h-full rounded-lg"
-                         src="{{ $product->image ? asset('storage/'.$product->image) : asset('images/default-product.png') }}"
+                         src="{{ $product->imageUrl() ?: asset('images/default-product.png') }}"
                          alt="{{ $product->name }}"
                          onerror="this.src='{{ asset('images/default-product.png') }}'">
                 </div>

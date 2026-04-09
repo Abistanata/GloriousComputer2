@@ -425,8 +425,8 @@
             @forelse($featuredProducts as $product)
             <div class="group hover-lift bg-dark-800 rounded-2xl overflow-hidden border border-dark-500 transition-all duration-300">
                 <div class="relative h-56 bg-dark-900 overflow-hidden">
-                    @if($product->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($product->image))
-                        <img src="{{ asset('storage/' . $product->image) }}"
+                    @if($product->imageUrl())
+                        <img src="{{ $product->imageUrl() }}"
                              alt="{{ $product->name }}"
                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     @else

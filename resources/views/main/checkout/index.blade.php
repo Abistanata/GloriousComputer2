@@ -86,8 +86,8 @@
                             <div class="flex items-center justify-between py-3 border-b border-dark-600 last:border-0">
                                 <div class="flex items-center gap-4 flex-1">
                                     <!-- Product Image Thumbnail -->
-                                    @if($item->product->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->product->image))
-                                        <img src="{{ asset('storage/' . $item->product->image) }}" 
+                                    @if($item->product->imageUrl())
+                                        <img src="{{ $item->product->imageUrl() }}" 
                                              alt="{{ $item->product->name }}"
                                              class="w-16 h-16 object-cover rounded-lg bg-dark-900">
                                     @else

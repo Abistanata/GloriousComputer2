@@ -41,15 +41,7 @@
                 <div class="p-6 md:p-8 lg:border-r border-gray-800">
                     <div class="bg-gray-800/40 rounded-xl overflow-hidden mb-4 border border-gray-700/60 group">
                         @php
-                            $imagePath = $product->image;
-                            $imageUrl  = null;
-                            if ($imagePath) {
-                                if (Storage::disk('public')->exists($imagePath)) {
-                                    $imageUrl = asset('storage/' . $imagePath);
-                                } elseif (Str::startsWith($imagePath, ['http://', 'https://'])) {
-                                    $imageUrl = $imagePath;
-                                }
-                            }
+                            $imageUrl = $product->imageUrl();
                         @endphp
 
                         @if($imageUrl)
@@ -192,7 +184,7 @@
                         <button type="button" id="btn-cart-{{ $product->id }}"
                                 data-product-name="{{ e($product->name) }}"
                                 data-product-price="{{ $finalPrice }}"
-                                data-product-image="{{ e($product->image ?? '') }}"
+                                data-product-image="{{ e($product->imageUrl() ?? '') }}"
                                 onclick="addToCart(this)"
                                 class="product-action-btn flex-1 {{ $isInCart ? 'bg-green-600 hover:bg-green-700 border-green-500' : 'bg-primary hover:bg-primary-dark border-primary' }} text-white py-3 px-4 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 border shadow-lg">
                             <i class="fas fa-shopping-cart"></i>
@@ -483,15 +475,7 @@
                         $relatedFinalPrice        = $related->final_price;
                         $relatedSellingPrice      = $related->selling_price;
                         $relatedDiscountPercentage= $related->discount_percentage;
-                        $relatedImagePath         = $related->image;
-                        $relatedImageUrl          = null;
-                        if ($relatedImagePath) {
-                            if (Storage::disk('public')->exists($relatedImagePath)) {
-                                $relatedImageUrl = asset('storage/' . $relatedImagePath);
-                            } elseif (Str::startsWith($relatedImagePath, ['http://', 'https://'])) {
-                                $relatedImageUrl = $relatedImagePath;
-                            }
-                        }
+                        $relatedImageUrl          = $related->imageUrl();
                     @endphp
 
                     <a href="{{ route('main.products.show', $related->id) }}"

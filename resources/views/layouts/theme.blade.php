@@ -1207,8 +1207,7 @@
                                     $price = $cartItem->product->final_price ?? $cartItem->product->selling_price ?? 0;
                                     $sub = $price * $cartItem->quantity;
                                     $sidebarTotal += $sub;
-                                    $imgUrl = $cartItem->product->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($cartItem->product->image)
-                                        ? asset('storage/' . $cartItem->product->image) : null;
+                                    $imgUrl = $cartItem->product->imageUrl();
                                 @endphp
                                 <div class="cart-item flex gap-3 p-3 rounded-lg bg-dark-700/50 border border-gray-700">
                                     @if($imgUrl)

@@ -343,9 +343,9 @@
                     <h2 class="text-lg font-medium text-gray-900 dark:text-white">Gambar Produk</h2>
                 </div>
                 <div class="p-6">
-                    @if($product->image)
+                    @if($product->imageUrl())
                         <div class="overflow-hidden rounded-lg">
-                            <img src="{{ asset('storage/' . $product->image) }}"
+                            <img src="{{ $product->imageUrl() }}"
                                  alt="{{ $product->name }}"
                                  class="object-cover w-full h-48 mx-auto">
                         </div>

@@ -365,7 +365,7 @@
                                                 <div class="flex-shrink-0">
                                                     <div class="flex items-center justify-center w-12 h-12 overflow-hidden transition-shadow duration-200 shadow-lg bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl group-hover:shadow-xl">
                                                         <img class="object-cover w-full h-full"
-                                                             src="{{ $product->image ? asset('storage/'.$product->image) : asset('images/default-product.png') }}"
+                                                             src="{{ $product->imageUrl() ?: asset('images/default-product.png') }}"
                                                              alt="{{ $product->name }}">
                                                     </div>
                                                 </div>
